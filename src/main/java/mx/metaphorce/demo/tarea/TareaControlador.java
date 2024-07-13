@@ -20,23 +20,24 @@ public class TareaControlador {
     }
 
     @GetMapping("/completadas")
-    public List<TareaEntidad> obtenerTareasCompletadas() {
-        return tareaServicio.obtenerTareasCompletadas(true);
+    public ResponseEntity<?> obtenerTareasCompletadas() {
+        return ResponseEntity.status(HttpStatus.OK).body(tareaServicio.obtenerTareasCompletadas(true));
     }
 
     @GetMapping("/nocompletadas")
-    public List<TareaEntidad> obtenerTareasNoCompletadas() {
-        return tareaServicio.obtenerTareasCompletadas(false);
+    public ResponseEntity<?> obtenerTareasNoCompletadas() {
+        return ResponseEntity.status(HttpStatus.OK).body(tareaServicio.obtenerTareasCompletadas(false));
     }
 
     @PostMapping
-    public TareaEntidad guardarTarea(@RequestBody TareaEntidad tarea) {
-        return tareaServicio.guardarTarea(tarea);
+    public ResponseEntity<?> guardarTarea(@RequestBody TareaEntidad tarea) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(tareaServicio.guardarTarea(tarea));
     }
 
     @DeleteMapping("/{id}")
-    public void eliminarTarea(@PathVariable Long id) {
+    public ResponseEntity<?> eliminarTarea(@PathVariable Long id) {
         tareaServicio.eliminarTarea(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

@@ -11,23 +11,23 @@ public class TareaServicio {
 
     private final TareaRepositorio tareaRepositorio;
 
-    public List<TareaEntidad> obtenerTareas() {
+    public List<TareaEntidad> obtenerTareas() throws TareaExcepcion {
         List<TareaEntidad> tareas = (List<TareaEntidad>) tareaRepositorio.findAll();
         if (tareas.isEmpty()) {
-            throw new RuntimeException("No hay tareas registradas");
+            throw new TareaExcepcion("No hay tareas registradas");
         }
         return tareas;
     }
 
-    public List<TareaEntidad> obtenerTareasCompletadas(boolean completada) {
+    public List<TareaEntidad> obtenerTareasCompletadas(boolean completada) throws TareaExcepcion {
         List<TareaEntidad> tareas = (List<TareaEntidad>) tareaRepositorio.findAllByCompletada(completada);
         if (tareas.isEmpty()) {
-            throw new RuntimeException("No hay tareas registradas");
+            throw new TareaExcepcion("No hay tareas registradas");
         }
         return tareas;
     }
 
-    public TareaEntidad guardarTarea(TareaEntidad tarea) {
+    public TareaEntidad guardarTarea(TareaEntidad tarea) throws TareaExcepcion {
         TareaEntidad nueva = tareaRepositorio.findByTitulo(tarea.getTitulo()).orElse(null);
 
         if(isUpdate(tarea)) {
@@ -36,7 +36,7 @@ public class TareaServicio {
             }
         } else {
             if(nueva != null) {
-                throw new RuntimeException("La tarea ya existe");
+                throw new TareaExcepcion("La tarea ya existe");
             } else {
                 tarea = tareaRepositorio.save(tarea);
             }
@@ -45,12 +45,13 @@ public class TareaServicio {
         return tareaRepositorio.save(tarea);
     }
 
-    public void eliminarTarea(Long id) {
+    public TareaEntidad eliminarTarea(Long id) throws TareaExcepcion {
         TareaEntidad tarea = tareaRepositorio.findById(id).orElse(null);
         if(tarea == null) {
-            throw new RuntimeException("La tarea no existe");
+            throw new TareaExcepcion("La tarea no existe");
         }
         tareaRepositorio.deleteById(id);
+        return tarea;
     }
 
     private boolean isUpdate(TareaEntidad tarea) {

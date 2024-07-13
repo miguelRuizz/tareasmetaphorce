@@ -16,28 +16,48 @@ public class TareaControlador {
 
     @GetMapping
     public ResponseEntity<?> obtenerTareas() {
-        return ResponseEntity.status(HttpStatus.OK).body(tareaServicio.obtenerTareas());
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(tareaServicio.obtenerTareas());
+        } catch (TareaExcepcion e) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
+        }
     }
 
     @GetMapping("/completadas")
     public ResponseEntity<?> obtenerTareasCompletadas() {
-        return ResponseEntity.status(HttpStatus.OK).body(tareaServicio.obtenerTareasCompletadas(true));
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(tareaServicio.obtenerTareasCompletadas(true));
+        } catch (TareaExcepcion e) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
+        }
     }
 
     @GetMapping("/nocompletadas")
     public ResponseEntity<?> obtenerTareasNoCompletadas() {
-        return ResponseEntity.status(HttpStatus.OK).body(tareaServicio.obtenerTareasCompletadas(false));
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(tareaServicio.obtenerTareasCompletadas(false));
+        } catch (TareaExcepcion e) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
+        }
     }
 
     @PostMapping
     public ResponseEntity<?> guardarTarea(@RequestBody TareaEntidad tarea) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(tareaServicio.guardarTarea(tarea));
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(tareaServicio.guardarTarea(tarea));
+        } catch (TareaExcepcion e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminarTarea(@PathVariable Long id) {
-        tareaServicio.eliminarTarea(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        try {
+            TareaEntidad tarea = tareaServicio.eliminarTarea(id);
+            return ResponseEntity.status(HttpStatus.OK).body(tarea);
+        } catch (TareaExcepcion e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
 }
